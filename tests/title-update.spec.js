@@ -1,6 +1,8 @@
 const { test, expect } = require("@playwright/test");
 const { exec } = require("child_process");
 
+const url = "http://localhost:3300";
+
 const startServer = async (path, cache = false) => {
   return new Promise((resolve, reject) => {
     const cacheArg = cache ? "-- --cache" : "";
@@ -57,13 +59,13 @@ test("a change to the page is reflected in the browser when caching is disabled"
   let serverProcess;
   try {
     serverProcess = await startOldServer();
-    await page.goto("http://localhost:3300");
+    await page.goto(url);
     await expect(page).toHaveTitle("Your Old Page Title");
 
     await stopServer(serverProcess);
 
     serverProcess = await startNewServer();
-    await page.goto("http://localhost:3300");
+    await page.goto(url);
     await expect(page).toHaveTitle("Your New Page Title");
   } finally {
     await stopServer(serverProcess);
@@ -76,15 +78,33 @@ test("a cached response is returned when caching is enabled instead of a live re
   let serverProcess;
   try {
     serverProcess = await startOldServer(true);
-    await page.goto("http://localhost:3300");
+    await page.goto(url);
     await expect(page).toHaveTitle("Your Old Page Title");
 
     await stopServer(serverProcess);
 
     serverProcess = await startNewServer(true);
-    await page.goto("http://localhost:3300");
-    // Why is Express returning the new title here if it's cached?
+    await page.goto(url);
     await expect(page).toHaveTitle("Your Old Page Title");
+  } finally {
+    await stopServer(serverProcess);
+  }
+});
+
+test("a change to the page is reflected in the browser when caching is enabled and a version is specified", async ({
+  page,
+}) => {
+  let serverProcess;
+  try {
+    serverProcess = await startOldServer(true);
+    await page.goto(url);
+    await expect(page).toHaveTitle("Your Old Page Title");
+
+    await stopServer(serverProcess);
+
+    serverProcess = await startNewServer(true);
+    await page.goto(url + "?v=2");
+    await expect(page).toHaveTitle("Your New Page Title");
   } finally {
     await stopServer(serverProcess);
   }

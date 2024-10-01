@@ -1,4 +1,5 @@
 node_modules
 playwright-report
-.last-run.json
 test-results
+.last-run.json
+
