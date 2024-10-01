@@ -12,7 +12,7 @@ const startServer = async (path, cache = false) => {
           reject(error);
           return;
         }
-        console.log(`Server started on port 3000`);
+        console.log(`Server started on port 3300`);
       }
     );
 
@@ -57,13 +57,13 @@ test("a change to the page is reflected in the browser when caching is disabled"
   let serverProcess;
   try {
     serverProcess = await startOldServer();
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3300");
     await expect(page).toHaveTitle("Your Old Page Title");
 
     await stopServer(serverProcess);
 
     serverProcess = await startNewServer();
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3300");
     await expect(page).toHaveTitle("Your New Page Title");
   } finally {
     await stopServer(serverProcess);
@@ -76,13 +76,13 @@ test("a cached response is returned when caching is enabled instead of a live re
   let serverProcess;
   try {
     serverProcess = await startOldServer(true);
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3300");
     await expect(page).toHaveTitle("Your Old Page Title");
 
     await stopServer(serverProcess);
 
     serverProcess = await startNewServer(true);
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3300");
     // Why is Express returning the new title here if it's cached?
     await expect(page).toHaveTitle("Your Old Page Title");
   } finally {
