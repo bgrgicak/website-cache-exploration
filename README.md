@@ -1,14 +1,7 @@
 # Explore website caching
 
-## Run the server without cache headers
+## Run the tests
 
 ```bash
-node server.js
+npm test
 ```
-
-## Run the server with cache headers
-
-```bash
-node server.js --cache
-```
-
